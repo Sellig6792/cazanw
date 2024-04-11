@@ -66,3 +66,80 @@ pub(crate) fn is_convex(polygon: &Polygon) -> bool {
     }
     true
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_distance() {
+        let a = Point { x: 0, y: 0 };
+        let b = Point { x: 3, y: 4 };
+        assert_eq!(distance(a, b), 5);
+    }
+
+    #[test]
+    fn test_cross_product() {
+        let a = Point { x: 0, y: 0 };
+        let b = Point { x: 3, y: 4 };
+        let c = Point { x: 4, y: 3 };
+        assert_eq!(cross_product(a, b, c), -7);
+    }
+
+    #[test]
+    fn test_is_point_inside_triangle_on_side() {
+        let triangle = vec![
+            Point { x: 0, y: 0 },
+            Point { x: 3, y: 4 },
+            Point { x: 4, y: 0 },
+        ];
+        let point = Point { x: 2, y: 2 };
+        assert!(is_point_inside_triangle(&triangle, point));
+    }
+
+    #[test]
+    fn test_is_point_inside_triangle() {
+        let triangle = vec![
+            Point { x: 0, y: 0 },
+            Point { x: 3, y: 4 },
+            Point { x: 4, y: 0 },
+        ];
+        let point = Point { x: 2, y: 1 };
+        assert!(is_point_inside_triangle(&triangle, point));
+    }
+
+    #[test]
+    fn test_is_point_outside_triangle() {
+        let triangle = vec![
+            Point { x: 0, y: 0 },
+            Point { x: 3, y: 4 },
+            Point { x: 4, y: 0 },
+        ];
+        let point = Point { x: 2, y: 3 };
+        assert!(!is_point_inside_triangle(&triangle, point));
+    }
+
+
+    #[test]
+    fn test_is_convex() {
+        let polygon = vec![
+            Point { x: 0, y: 0 },
+            Point { x: 3, y: 4 },
+            Point { x: 5, y: 1 },
+            Point { x: 3, y: 0 },
+        ];
+        assert!(is_convex(&polygon));
+    }
+
+    #[test]
+    fn test_is_not_convex() {
+        let polygon = vec![
+            Point { x: 0, y: 0 },
+            Point { x: 3, y: 4 },
+            Point { x: 4, y: 0 },
+            Point { x: 3, y: 2 },
+        ];
+        assert!(!is_convex(&polygon));
+    }
+}
