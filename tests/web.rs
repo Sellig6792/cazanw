@@ -14,7 +14,6 @@ fn pass() {
     assert_eq!(1 + 1, 2);
 }
 
-
 #[wasm_bindgen_test]
 fn test_distance() {
     let a = Point { x: 0, y: 0 };
