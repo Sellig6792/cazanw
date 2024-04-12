@@ -1,5 +1,5 @@
-use std::cmp::Ordering;
 use num_integer::Roots;
+use std::cmp::Ordering;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -27,7 +27,8 @@ pub fn distance(a: Point, b: Point) -> u16 {
 }
 
 pub(crate) fn cross_product(a: Point, b: Point, c: Point) -> i32 {
-    (b.x as i32 - a.x as i32) * (c.y as i32 - b.y as i32) - (b.y as i32 - a.y as i32) * (c.x as i32 - b.x as i32)
+    (b.x as i32 - a.x as i32) * (c.y as i32 - b.y as i32)
+        - (b.y as i32 - a.y as i32) * (c.x as i32 - b.x as i32)
 }
 
 pub(crate) fn is_point_inside_triangle(triangle: &Polygon, point: Point) -> bool {
@@ -45,8 +46,6 @@ pub(crate) fn is_point_inside_triangle(triangle: &Polygon, point: Point) -> bool
         _ => false,
     }
 }
-
-
 
 pub(crate) fn is_convex(polygon: &Polygon) -> bool {
     let mut sign = 0;
@@ -66,7 +65,6 @@ pub(crate) fn is_convex(polygon: &Polygon) -> bool {
     }
     true
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -119,7 +117,6 @@ mod tests {
         let point = Point { x: 2, y: 3 };
         assert!(!is_point_inside_triangle(&triangle, point));
     }
-
 
     #[test]
     fn test_is_convex() {
