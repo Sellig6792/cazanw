@@ -1,8 +1,9 @@
 [package]
-name = "cazan-wasm"
+name = "cazanw"
 version = "0.1.0"
 authors = ["Sellig6792 <sellig6792@gmail.com>"]
 edition = "2018"
+
 
 [lib]
 crate-type = ["cdylib", "rlib"]
