@@ -36,8 +36,8 @@ pub type Polygon = Vec<Point>;
 
 #[wasm_bindgen]
 pub fn distance(a: Point, b: Point) -> u16 {
-    let dx = (a.x as i32 - b.x as i32).abs() as u16;
-    let dy = (a.y as i32 - b.y as i32).abs() as u16;
+    let dx = (a.x as i32 - b.x as i32).unsigned_abs() as u16;
+    let dy = (a.y as i32 - b.y as i32).unsigned_abs() as u16;
     (dx * dx + dy * dy).sqrt()
 }
 
@@ -51,15 +51,15 @@ pub(crate) fn is_point_inside_triangle(triangle: &Triangle, point: Point) -> boo
     let b = triangle.1;
     let c = triangle.2;
 
-    match (
-        cross_product(a, b, point).cmp(&0),
-        cross_product(b, c, point).cmp(&0),
-        cross_product(c, a, point).cmp(&0),
-    ) {
-        (Ordering::Less, Ordering::Less, Ordering::Less) => true,
-        (Ordering::Greater, Ordering::Greater, Ordering::Greater) => true,
-        _ => false,
-    }
+    matches!(
+        (
+            cross_product(a, b, point).cmp(&0),
+            cross_product(b, c, point).cmp(&0),
+            cross_product(c, a, point).cmp(&0),
+        ),
+        (Ordering::Less, Ordering::Less, Ordering::Less)
+            | (Ordering::Greater, Ordering::Greater, Ordering::Greater)
+    )
 }
 
 pub(crate) fn is_convex(polygon: &Polygon) -> bool {
