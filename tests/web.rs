@@ -72,7 +72,7 @@ mod triangulation {
             Point { x: 1, y: 8 },
         );
         let polygon = vec![a, b, c, d, e, f, g, h];
-        let mut triangles = triangulate(polygon).unwrap();
+        let triangles = triangulate(polygon).unwrap();
         assert_eq!(triangles.len(), 6);
 
         let right_triangles = vec![
