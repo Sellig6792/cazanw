@@ -125,7 +125,8 @@ mod triangulation {
                 Triangle(f, l, m),
                 Triangle(f, m, a),
                 Triangle(f, a, b),
-            ]);
+            ]
+        );
     }
 
     #[wasm_bindgen_test]
