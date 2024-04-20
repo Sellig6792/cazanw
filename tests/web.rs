@@ -46,7 +46,7 @@ mod triangulation {
             Triangle(
                 Point { x: 3, y: 4 },
                 Point { x: 4, y: 0 },
-                Point { x: 2, y: 2 }
+                Point { x: 2, y: 2 },
             )
         );
         assert_eq!(
@@ -54,7 +54,7 @@ mod triangulation {
             Triangle(
                 Point { x: 0, y: 0 },
                 Point { x: 3, y: 4 },
-                Point { x: 2, y: 2 }
+                Point { x: 2, y: 2 },
             )
         );
     }
@@ -88,6 +88,47 @@ mod triangulation {
     }
 
     #[wasm_bindgen_test]
+    fn test_triangulate_2() {
+        // (2,8) (5,14) (6,16) sont sur la meme ligne --> pas de triangle --> supprimer les triangles qui sont plats
+        let (a, b, c, d, e, f, g, h, i, j, k, l, m) = (
+            Point { x: 0, y: 0 },
+            Point { x: 4, y: 0 },
+            Point { x: 5, y: 2 },
+            Point { x: 8, y: 1 },
+            Point { x: 10, y: 6 },
+            Point { x: 6, y: 4 },
+            Point { x: 10, y: 8 },
+            Point { x: 6, y: 10 },
+            Point { x: 6, y: 16 },
+            Point { x: 5, y: 14 },
+            Point { x: 4, y: 15 },
+            Point { x: 0, y: 16 },
+            Point { x: 2, y: 8 },
+        );
+
+        let polygon = vec![a, b, c, d, e, f, g, h, i, j, k, l, m];
+
+        let triangles = triangulate(polygon).unwrap();
+
+        assert_eq!(triangles.len(), 11);
+        assert_eq_unordered!(
+            triangles,
+            vec![
+                Triangle(b, c, m),
+                Triangle(c, d, m),
+                Triangle(d, e, m),
+                Triangle(f, g, h),
+                Triangle(f, h, i),
+                Triangle(f, i, j),
+                Triangle(f, j, k),
+                Triangle(f, k, l),
+                Triangle(f, l, m),
+                Triangle(f, m, a),
+                Triangle(f, a, b),
+            ]);
+    }
+
+    #[wasm_bindgen_test]
     fn test_triangulate_convex() {
         let polygon = vec![
             Point { x: 0, y: 0 },
@@ -118,7 +159,7 @@ mod triangulation {
             Triangle(
                 Point { x: 0, y: 0 },
                 Point { x: 3, y: 4 },
-                Point { x: 4, y: 0 }
+                Point { x: 4, y: 0 },
             )
         );
     }
