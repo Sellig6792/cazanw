@@ -2,11 +2,10 @@
 
 #![cfg(target_arch = "wasm32")]
 
+extern crate cazanw;
 extern crate wasm_bindgen_test;
 
 use wasm_bindgen_test::*;
-
-extern crate cazanw;
 
 wasm_bindgen_test_configure!(run_in_browser);
 

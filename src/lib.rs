@@ -3,6 +3,7 @@ use wasm_bindgen::prelude::wasm_bindgen;
 mod utils;
 
 pub mod geometry;
+pub mod image;
 pub mod triangulation;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
