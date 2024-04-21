@@ -16,6 +16,34 @@ impl Point {
     pub fn new(x: u16, y: u16) -> Self {
         Self { x, y }
     }
+
+    pub fn right(&self) -> Self {
+        Self {
+            x: self.x + 1,
+            y: self.y,
+        }
+    }
+
+    pub fn left(&self) -> Self {
+        Self {
+            x: self.x - 1,
+            y: self.y,
+        }
+    }
+
+    pub fn up(&self) -> Self {
+        Self {
+            x: self.x,
+            y: self.y - 1,
+        }
+    }
+
+    pub fn down(&self) -> Self {
+        Self {
+            x: self.x,
+            y: self.y + 1,
+        }
+    }
 }
 
 #[wasm_bindgen]
