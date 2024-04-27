@@ -9,21 +9,23 @@ const platform = process.platform;
 const arch = process.arch;
 
 function getWhichTarget() {
+  if (platform === "darwin") {
+    return arch === "arm64" ? "aarch64-apple-darwin" : "x86_64-apple-darwin";
+  }
 
+  if (platform === "win32") {
+    return arch === "arm64"
+      ? "aarch64-pc-windows-msvc"
+      : "x86_64-pc-windows-gnu";
+  }
 
-if (platform === 'darwin') {
-return arch === 'arm64' ? 'aarch64-apple-darwin' : 'x86_64-apple-darwin';
-}
+  if (platform === "linux") {
+    return arch === "arm64"
+      ? "aarch64-unknown-linux-gnu"
+      : "x86_64-unknown-linux-gnu";
+  }
 
-if (platform === 'win32') {
-return arch === 'arm64' ? 'aarch64-pc-windows-msvc' : 'x86_64-pc-windows-gnu';
-}
-
-if (platform === 'linux') {
-return arch === 'arm64' ? 'aarch64-unknown-linux-gnu' : 'x86_64-unknown-linux-gnu';
-}
-
-throw new Error(`Unsupported platform or architecture: ${platform} ${arch}`);
+  throw new Error(`Unsupported platform or architecture: ${platform} ${arch}`);
 }
 
 let exe_ext = process.platform === 'win32' ? '.exe' : '';
