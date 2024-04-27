@@ -1,4 +1,3 @@
-use log::trace;
 use std::fs;
 use std::path::PathBuf;
 
