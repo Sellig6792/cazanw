@@ -3,6 +3,5 @@
 Cargo.lock
 bin/
 pkg/
-wasm-pack.log
-drivers/**
+cazanw/drivers/**
 .idea/

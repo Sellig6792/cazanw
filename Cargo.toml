@@ -1,28 +1,15 @@
 [package]
-name = "cazanw"
+name = "cazanw-packer"
 version = "0.1.0"
-authors = ["Sellig6792 <sellig6792@gmail.com>"]
-edition = "2018"
+edition = "2021"
 
+[workspace]
+members = ["cazanw", "cazanw-bin", "post-build"]
 
-[lib]
-crate-type = ["cdylib", "rlib"]
+[[bin]]
+name = "cazanw"
+path = "cazanw-bin/src/main.rs"
 
-[features]
-default = ["console_error_panic_hook"]
-
-[dependencies]
-wasm-bindgen = "0.2.63"
-console_error_panic_hook = { version = "0.1.6", optional = true }
-wee_alloc = { version = "0.4.5", optional = true }
-
-mint = "0.5.9"
-num-integer = "0.1.46"
-
-[dev-dependencies]
-wasm-bindgen-test = "0.3.42"
-assert_unordered = "0.3.5"
 
 [profile.release]
-# Tell `rustc` to optimize for small code size.
 opt-level = "s"
