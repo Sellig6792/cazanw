@@ -155,17 +155,17 @@ mod tests {
         assert_eq_unordered!(
             triangles,
             vec![
-                Triangle(b, c, m),
-                Triangle(c, d, m),
-                Triangle(d, e, m),
-                Triangle(f, g, h),
-                Triangle(f, h, i),
-                Triangle(f, i, j),
-                Triangle(f, j, k),
-                Triangle(f, k, l),
-                Triangle(f, l, m),
-                Triangle(f, m, a),
-                Triangle(f, a, b),
+                Triangle(j, l, m),
+                Triangle(m, i, j),
+                Triangle(j, k, l),
+                Triangle(m, h, i),
+                Triangle(m, g, h),
+                Triangle(m, f, g),
+                Triangle(m, b, f),
+                Triangle(b, c, f),
+                Triangle(c, e, f),
+                Triangle(c, d, e),
+                Triangle(m, a, b),
             ]
         );
     }
