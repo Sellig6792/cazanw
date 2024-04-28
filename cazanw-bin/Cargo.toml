@@ -3,4 +3,10 @@ name = "cazanw-bin"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "cazanw"
+path = "src/main.rs"
+
 [dependencies]
+argh = "0.1.12"
+cprint = { version = "0.4.1", features = ["ceprint"] }

@@ -6,10 +6,5 @@ edition = "2021"
 [workspace]
 members = ["cazanw", "cazanw-bin", "post-build"]
 
-[[bin]]
-name = "cazanw"
-path = "cazanw-bin/src/main.rs"
-
-
 [profile.release]
 opt-level = "s"
