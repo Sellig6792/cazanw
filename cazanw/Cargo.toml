@@ -14,14 +14,10 @@ wasm-bindgen = "0.2.63"
 console_error_panic_hook = { version = "0.1.6", optional = true }
 wee_alloc = { version = "0.4.5", optional = true }
 
-mint = "0.5.9"
-num-integer = "0.1.46"
-image = { version = "0.25.1", default-features = false, features = ["png", "jpeg"] }
-
-
 [dev-dependencies]
 wasm-bindgen-test = "0.3.42"
 assert_unordered = "0.3.5"
+shared = { path = "../shared" }
 
 [build-dependencies]
 serde_json = "1.0.116"

@@ -1,33 +1,75 @@
-//! Test suite for the Web and headless browsers.
+use crate::geometry::*;
 
-#![cfg(target_arch = "wasm32")]
+#[cfg(feature = "wasm")]
+use wasm_bindgen::prelude::wasm_bindgen;
 
-extern crate cazanw;
-extern crate wasm_bindgen_test;
+pub fn is_ear(polygon: &Polygon, i: usize) -> bool {
+    let len = polygon.len();
 
-use wasm_bindgen_test::*;
+    // Get the points for the triangle
+    let prev = &polygon[(i + len - 1) % len];
+    let curr = &polygon[i];
+    let next = &polygon[(i + 1) % len];
 
-wasm_bindgen_test_configure!(run_in_browser);
-
-mod geometry {
-    use super::wasm_bindgen_test;
-    use cazanw::geometry::*;
-
-    #[wasm_bindgen_test]
-    fn test_distance() {
-        let a = Point { x: 0, y: 0 };
-        let b = Point { x: 3, y: 4 };
-        assert_eq!(distance(a, b), 5);
+    // Check if the triangle is counter-clockwise
+    if !is_counter_clockwise(prev, curr, next) {
+        return false;
     }
+
+    // Check if any points are inside the triangle
+    for point in polygon.iter() {
+        if point == prev || point == curr || point == next {
+            continue;
+        }
+        if is_point_inside_triangle(&Triangle(*prev, *curr, *next), *point) {
+            return false;
+        }
+    }
+
+    true
 }
 
-mod triangulation {
-    use super::wasm_bindgen_test;
-    use assert_unordered::assert_eq_unordered;
-    use cazanw::geometry::*;
-    use cazanw::triangulation::*;
+// Checks if the points form a counter-clockwise turn
+fn is_counter_clockwise(a: &Point, b: &Point, c: &Point) -> bool {
+    (b.x as i32 - a.x as i32) * (c.y as i32 - a.y as i32)
+        > (b.y as i32 - a.y as i32) * (c.x as i32 - b.x as i32)
+}
 
-    #[wasm_bindgen_test]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
+pub fn triangulate(polygon: Polygon) -> Option<Vec<Triangle>> {
+    if polygon.len() == 3 {
+        return Some(vec![Triangle(polygon[0], polygon[1], polygon[2])]);
+    }
+    if is_convex(&polygon) {
+        return None;
+    }
+
+    for i in 0..polygon.len() {
+        let prev = if i == 0 { polygon.len() - 1 } else { i - 1 };
+        let next = if i == polygon.len() - 1 { 0 } else { i + 1 };
+
+        let triangle = Triangle(polygon[prev], polygon[i], polygon[next]);
+
+        if is_ear(&polygon, i) {
+            let mut new_polygon = polygon.clone();
+            new_polygon.remove(i);
+
+            if let Some(mut triangles) = triangulate(new_polygon) {
+                triangles.push(triangle);
+                return Some(triangles);
+            }
+        }
+    }
+
+    None
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use assert_unordered::assert_eq_unordered;
+
+    #[test]
     fn test_triangulate() {
         let polygon = vec![
             Point { x: 0, y: 0 },
@@ -58,7 +100,7 @@ mod triangulation {
         );
     }
 
-    #[wasm_bindgen_test]
+    #[test]
     fn test_triangulate_n_vertices() {
         let (a, b, c, d, e, f, g, h) = (
             Point { x: 0, y: 0 },
@@ -86,7 +128,7 @@ mod triangulation {
         assert_eq_unordered!(triangles, right_triangles);
     }
 
-    #[wasm_bindgen_test]
+    #[test]
     fn test_triangulate_2() {
         // (2,8) (5,14) (6,16) sont sur la meme ligne --> pas de triangle --> supprimer les triangles qui sont plats
         let (a, b, c, d, e, f, g, h, i, j, k, l, m) = (
@@ -128,7 +170,7 @@ mod triangulation {
         );
     }
 
-    #[wasm_bindgen_test]
+    #[test]
     fn test_triangulate_convex() {
         let polygon = vec![
             Point { x: 0, y: 0 },
@@ -142,7 +184,7 @@ mod triangulation {
         // assert_eq!(is_convex(&polygon), true);
     }
 
-    #[wasm_bindgen_test]
+    #[test]
     fn test_triangulate_triangle() {
         let polygon = vec![
             Point { x: 0, y: 0 },

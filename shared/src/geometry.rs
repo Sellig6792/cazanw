@@ -1,18 +1,20 @@
 use num_integer::Roots;
 use std::cmp::{Ordering, PartialEq};
 use std::fmt::Debug;
+
+#[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[derive(Clone, Copy, Eq, PartialEq, PartialOrd, Ord, Debug)]
 pub struct Point {
     pub x: u16,
     pub y: u16,
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 impl Point {
-    #[wasm_bindgen(constructor)]
+    #[cfg_attr(feature = "wasm", wasm_bindgen(constructor))]
     pub fn new(x: u16, y: u16) -> Self {
         Self { x, y }
     }
@@ -46,7 +48,7 @@ impl Point {
     }
 }
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[derive(Clone, Copy, Debug)]
 pub struct Triangle(pub Point, pub Point, pub Point);
 
@@ -62,19 +64,19 @@ impl PartialEq for Triangle {
 
 pub type Polygon = Vec<Point>;
 
-#[wasm_bindgen]
+#[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn distance(a: Point, b: Point) -> u16 {
     let dx = (a.x as i32 - b.x as i32).unsigned_abs() as u16;
     let dy = (a.y as i32 - b.y as i32).unsigned_abs() as u16;
     (dx * dx + dy * dy).sqrt()
 }
 
-pub(crate) fn cross_product(a: Point, b: Point, c: Point) -> i32 {
+pub fn cross_product(a: Point, b: Point, c: Point) -> i32 {
     (b.x as i32 - a.x as i32) * (c.y as i32 - b.y as i32)
         - (b.y as i32 - a.y as i32) * (c.x as i32 - b.x as i32)
 }
 
-pub(crate) fn is_point_inside_triangle(triangle: &Triangle, point: Point) -> bool {
+pub fn is_point_inside_triangle(triangle: &Triangle, point: Point) -> bool {
     let a = triangle.0;
     let b = triangle.1;
     let c = triangle.2;
@@ -90,7 +92,7 @@ pub(crate) fn is_point_inside_triangle(triangle: &Triangle, point: Point) -> boo
     )
 }
 
-pub(crate) fn is_convex(polygon: &Polygon) -> bool {
+pub fn is_convex(polygon: &Polygon) -> bool {
     let mut sign = 0;
     for i in 0..polygon.len() {
         let a = polygon[i];
