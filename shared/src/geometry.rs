@@ -4,9 +4,10 @@ use std::fmt::Debug;
 
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
+use serde::{Deserialize, Serialize};
 
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
-#[derive(Clone, Copy, Eq, PartialEq, PartialOrd, Ord, Debug)]
+#[derive(Clone, Copy, Eq, PartialEq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
 pub struct Point {
     pub x: u16,
     pub y: u16,
@@ -49,7 +50,7 @@ impl Point {
 }
 
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct Triangle(pub Point, pub Point, pub Point);
 
 impl PartialEq for Triangle {
@@ -68,7 +69,7 @@ pub type Polygon = Vec<Point>;
 pub fn distance(a: Point, b: Point) -> u16 {
     let dx = (a.x as i32 - b.x as i32).unsigned_abs() as u16;
     let dy = (a.y as i32 - b.y as i32).unsigned_abs() as u16;
-    (dx * dx + dy * dy).sqrt()
+    (dx as u64 * dx as u64 + dy as u64 * dy as u64).sqrt() as u16
 }
 
 pub fn cross_product(a: Point, b: Point, c: Point) -> i32 {
@@ -104,7 +105,7 @@ pub fn is_convex(polygon: &Polygon) -> bool {
         }
         if sign == 0 {
             sign = cross;
-        } else if sign * cross < 0 {
+        } else if (sign as i64) * (cross as i64) < 0 {
             return false;
         }
     }
