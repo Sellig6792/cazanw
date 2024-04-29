@@ -24,11 +24,10 @@ pub fn rdp(polygon: &Polygon, epsilon: f64) -> Polygon {
 }
 
 fn perpendicular_distance(p: Point, a: Point, b: Point) -> f64 {
-    let num = ((b.y as i32 - a.y as i32) * p.x as i32) - ((b.x as i32 - a.x as i32) * p.y as i32) + (b.x as i32 * a.y as i32) - (b.y as i32 * a.x as i32);
+    let num = ((b.y as i32 - a.y as i32) * p.x as i32) - ((b.x as i32 - a.x as i32) * p.y as i32)
+        + (b.x as i32 * a.y as i32)
+        - (b.y as i32 * a.x as i32);
     let num = num.abs() as f64;
     let den = distance(a, b) as f64;
     num / den
 }
-
-
-

@@ -5,7 +5,7 @@ use earcutr::earcut;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
-pub fn triangulate(polygon: Polygon) -> Result<Vec<Triangle>, earcutr::Error> {
+pub fn triangulate(polygon: &Polygon) -> Result<Vec<Triangle>, earcutr::Error> {
     if polygon.len() < 3 {
         return Ok(vec![Triangle(polygon[0], polygon[1], polygon[2])]);
     }
@@ -16,13 +16,10 @@ pub fn triangulate(polygon: Polygon) -> Result<Vec<Triangle>, earcutr::Error> {
         .collect();
     let indices = earcut(&points, &[], 2)?;
 
-    Ok(indices.chunks(3).map(|chunk| {
-        Triangle(
-            polygon[chunk[0]],
-            polygon[chunk[1]],
-            polygon[chunk[2]],
-        )
-    }).collect())
+    Ok(indices
+        .chunks(3)
+        .map(|chunk| Triangle(polygon[chunk[0]], polygon[chunk[1]], polygon[chunk[2]]))
+        .collect())
 }
 
 #[cfg(test)]
@@ -38,7 +35,7 @@ mod tests {
             Point { x: 2, y: 2 },
         ];
 
-        let triangles = match triangulate(polygon) {
+        let triangles = match triangulate(&polygon) {
             Ok(triangles) => triangles,
             Err(_) => panic!("Error"),
         };
@@ -59,7 +56,7 @@ mod tests {
             Point { x: 1, y: 8 },
         ];
 
-        let triangles = triangulate(polygon).unwrap();
+        let triangles = triangulate(&polygon).unwrap();
 
         assert_eq!(triangles.len(), polygon.len() - 2);
     }
@@ -82,7 +79,7 @@ mod tests {
             Point { x: 2, y: 8 },
         ];
 
-        let triangles = triangulate(polygon).unwrap();
+        let triangles = triangulate(&polygon).unwrap();
 
         assert_eq!(triangles.len(), polygon.len() - 2);
     }
@@ -94,7 +91,7 @@ mod tests {
             Point { x: 3, y: 4 },
             Point { x: 4, y: 0 },
         ];
-        let triangles = match triangulate(polygon) {
+        let triangles = match triangulate(&polygon) {
             Ok(triangles) => triangles,
             Err(_) => panic!("Error"),
         };

@@ -5,3 +5,4 @@ bin/
 pkg/
 cazanw/drivers/**
 .idea/
+**/cazan-assets.json

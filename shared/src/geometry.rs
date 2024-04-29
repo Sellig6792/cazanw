@@ -2,9 +2,9 @@ use num_integer::Roots;
 use std::cmp::{Ordering, PartialEq};
 use std::fmt::Debug;
 
+use serde::{Deserialize, Serialize};
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
-use serde::{Deserialize, Serialize};
 
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[derive(Clone, Copy, Eq, PartialEq, PartialOrd, Ord, Debug, Serialize, Deserialize)]
@@ -56,6 +56,27 @@ impl Point {
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 #[derive(Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct Triangle(pub Point, pub Point, pub Point);
+
+#[cfg(test)]
+impl IntoIterator for Triangle {
+    type Item = Point;
+    type IntoIter = std::vec::IntoIter<Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        vec![self.0, self.1, self.2].into_iter()
+    }
+}
+
+#[cfg(test)]
+impl FromIterator<Point> for Triangle {
+    fn from_iter<T: IntoIterator<Item = Point>>(iter: T) -> Self {
+        let mut iter = iter.into_iter();
+        let a = iter.next().unwrap();
+        let b = iter.next().unwrap();
+        let c = iter.next().unwrap();
+        Self(a, b, c)
+    }
+}
 
 impl PartialEq for Triangle {
     fn eq(&self, other: &Self) -> bool {
