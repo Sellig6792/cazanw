@@ -20,32 +20,36 @@ impl Point {
         Self { x, y }
     }
 
-    pub fn right(&self) -> Self {
-        Self {
-            x: self.x + 1,
-            y: self.y,
-        }
+    pub fn right(&self) -> Option<Self> {
+        self.x.checked_add(1).map(|x| Self { x, y: self.y })
     }
 
-    pub fn left(&self) -> Self {
-        Self {
-            x: self.x - 1,
-            y: self.y,
-        }
+    pub fn left(&self) -> Option<Self> {
+        self.x.checked_sub(1).map(|x| Self { x, y: self.y })
     }
 
-    pub fn up(&self) -> Self {
-        Self {
-            x: self.x,
-            y: self.y - 1,
-        }
+    pub fn up(&self) -> Option<Self> {
+        self.y.checked_sub(1).map(|y| Self { x: self.x, y })
     }
 
-    pub fn down(&self) -> Self {
-        Self {
-            x: self.x,
-            y: self.y + 1,
-        }
+    pub fn down(&self) -> Option<Self> {
+        self.y.checked_add(1).map(|y| Self { x: self.x, y })
+    }
+
+    pub fn right_up(&self) -> Option<Self> {
+        self.right().and_then(|point| point.up())
+    }
+
+    pub fn right_down(&self) -> Option<Self> {
+        self.right().and_then(|point| point.down())
+    }
+
+    pub fn left_up(&self) -> Option<Self> {
+        self.left().and_then(|point| point.up())
+    }
+
+    pub fn left_down(&self) -> Option<Self> {
+        self.left().and_then(|point| point.down())
     }
 }
 

@@ -89,28 +89,28 @@ impl ImageEdgesParser {
             points.push(current_point);
             let right_point = edge_points
                 .iter()
-                .find(|&point| point == &current_point.right());
+                .find(|&point| Some(point) == current_point.right().as_ref());
             let right_up_point = edge_points
                 .iter()
-                .find(|&point| point == &current_point.right().up());
+                .find(|&point| Some(point) == current_point.right_up().as_ref());
             let right_down_point = edge_points
                 .iter()
-                .find(|&point| point == &current_point.right().down());
+                .find(|&point| Some(point) == current_point.right_down().as_ref());
             let up_point = edge_points
                 .iter()
-                .find(|&point| point == &current_point.up());
+                .find(|&point| Some(point) == current_point.up().as_ref());
             let down_point = edge_points
                 .iter()
-                .find(|&point| point == &current_point.down());
+                .find(|&point| Some(point) == current_point.down().as_ref());
             let left_point = edge_points
                 .iter()
-                .find(|&point| point == &current_point.left());
+                .find(|&point| Some(point) == current_point.left().as_ref());
             let left_up_point = edge_points
                 .iter()
-                .find(|&point| point == &current_point.left().up());
+                .find(|&point| Some(point) == current_point.left_up().as_ref());
             let left_down_point = edge_points
                 .iter()
-                .find(|&point| point == &current_point.left().down());
+                .find(|&point| Some(point) == current_point.left_down().as_ref());
 
             // log(&format!("right_point: {:?}\nright_up_point: {:?}\nright_down_point: {:?}\nup_point: {:?}\ndown_point: {:?}\nleft_point: {:?}\nleft_up_point: {:?}\nleft_down_point: {:?}", right_point, right_up_point, right_down_point, up_point, down_point, left_point, left_up_point, left_down_point));
             // Check if the point is not the last point of the polygon and if it is not already in the list
