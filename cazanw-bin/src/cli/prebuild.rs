@@ -2,9 +2,16 @@
 //! This command is used to prebuild the assets of your project
 //! It builds the PNG assets by reading PNG files, extracting the edges, simplifying the edges, and writing the edges to a JSON file
 
+use std::fs;
+
 use argh::FromArgs;
+use cprint::{Color, cprintln};
+use serde_json::{json, Value};
 
 use super::SubCommandTrait;
+
+use shared::rdp::rdp;
+use shared::{image::ImageEdgesParser, triangulation::triangulate};
 
 #[derive(PartialEq, Debug, FromArgs)]
 #[argh(
@@ -12,8 +19,62 @@ use super::SubCommandTrait;
     name = "prebuild",
     description = "pre-build the assets of your project"
 )]
-pub struct PreBuild {}
+pub struct PreBuild {
+    #[argh(
+        option,
+        short = 'o',
+        description = "output file",
+        default = "String::from(\"cazan-assets.json\")"
+    )]
+    pub output: String,
+}
 
+fn read_dir_recursive(dir: &std::path::Path) -> Vec<std::path::PathBuf> {
+    let mut files = Vec::new();
+    for entry in fs::read_dir(dir).unwrap() {
+        let entry = entry.unwrap();
+        let path = entry.path();
+        if path.is_dir() {
+            files.extend(read_dir_recursive(&path));
+        } else {
+            files.push(path);
+        }
+    }
+    files
+}
 impl SubCommandTrait for PreBuild {
-    fn run(&self) {}
+    fn run(&self) {
+        let cwd = std::env::current_dir().unwrap();
+
+        let files = read_dir_recursive(&cwd);
+
+        // Filter PNG and JPEG files
+        let png_files: Vec<std::path::PathBuf> = files
+            .iter()
+            .filter(|file| {
+                file.extension()
+                    .map_or(false, |ext| ext == "png" || ext == "jpg" || ext == "jpeg")
+            })
+            .cloned()
+            .collect();
+
+        let mut map = serde_json::Map::<String, Value>::new();
+
+        for file in png_files {
+            cprintln!("Parsing", format!("`{}`",file.file_name().unwrap().to_str().unwrap().to_string()), Color::Cyan);
+
+            let image = image::open(&file).unwrap();
+            let edges_parser = ImageEdgesParser::new(image);
+            let polygon = edges_parser.as_polygon();
+            let rdp_polygon = rdp(&polygon, 1.0);
+            let triangles = triangulate(&rdp_polygon).expect("Error triangulating");
+
+
+            map.insert(file.to_str().unwrap().to_string(), json!(triangles));
+            cprintln!("Triangulated", format!("`{}` to {} triangles", file.file_name().unwrap().to_str().unwrap().to_string(), triangles.len()), Color::Green);
+        }
+
+        let mut writer = fs::File::create(&self.output).unwrap();
+        serde_json::to_writer(&mut writer, &map).unwrap();
+    }
 }
