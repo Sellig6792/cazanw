@@ -1,5 +1,5 @@
 build:
-	wasm-pack build cazanw --target web --out-dir ../pkg $(RELEASE)
+	wasm-pack build --target web --out-dir ../pkg $(RELEASE)
 
 	cross build -p cazanw-bin --target x86_64-unknown-linux-gnu  $(RELEASE)
 	cross build -p cazanw-bin --target aarch64-unknown-linux-gnu $(RELEASE)
@@ -14,6 +14,10 @@ build:
 clean:
 	rm -rf pkg
 	cargo clean
+
+wclean:
+	rm -rf pkg
+	wargo clean
 
 clean-pkg:
 	rm -rf pkg
