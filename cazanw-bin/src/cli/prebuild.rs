@@ -10,8 +10,8 @@ use serde_json::{json, Value};
 
 use super::SubCommandTrait;
 
-use shared::rdp::rdp;
-use shared::{image::ImageEdgesParser, triangulation::triangulate};
+use cazan_common::rdp::rdp;
+use cazan_common::{image::ImageEdgesParser, triangulation::triangulate};
 
 #[derive(PartialEq, Debug, FromArgs)]
 #[argh(
@@ -27,6 +27,14 @@ pub struct PreBuild {
         default = "String::from(\"cazan-assets.json\")"
     )]
     pub output: String,
+
+    #[argh(
+        option,
+        short = 'e',
+        description = "epsilon value for the Ramer-Douglas-Peucker algorithm (Image simplification)",
+        default = "3.0"
+    )]
+    pub epsilon: f64,
 }
 
 fn read_dir_recursive(dir: &std::path::Path) -> Vec<std::path::PathBuf> {
@@ -66,7 +74,7 @@ impl SubCommandTrait for PreBuild {
             let image = image::open(&file).unwrap();
             let edges_parser = ImageEdgesParser::new(image);
             let polygon = edges_parser.as_polygon();
-            let rdp_polygon = rdp(&polygon, 1.0);
+            let rdp_polygon = rdp(&polygon, self.epsilon);
             let triangles = triangulate(&rdp_polygon).expect("Error triangulating");
 
 

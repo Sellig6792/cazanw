@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [workspace]
-members = ["cazanw-bin", "post-build", "shared"]
+members = ["cazanw-bin", "post-build"]
 
 [lib]
 crate-type = ["cdylib", "rlib"]
@@ -20,10 +20,7 @@ wee_alloc = { version = "0.4.5", optional = true }
 [dev-dependencies]
 wasm-bindgen-test = "0.3.42"
 assert_unordered = "0.3.5"
-shared = { path = "./shared", features = ["wasm"] }
-
-[build-dependencies]
-serde_json = "1.0.116"
+cazan-common = { version = "0.1.1", features = ["wasm"] }
 
 [profile.release]
 opt-level = "s"
